@@ -1,0 +1,29 @@
+{
+  "name": "augmented-basketball-association",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handsomecodemonkey/augmented-basketball-association.git"
+  },
+  "keywords": [
+    "solidity",
+    "smart contracts"
+  ],
+  "author": "Erick Kusnadi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/handsomecodemonkey/augmented-basketball-association/issues"
+  },
+  "homepage": "https://github.com/handsomecodemonkey/augmented-basketball-association#readme",
+  "dependencies": {
+    "openzeppelin-solidity": "1.10.0"
+  }
+}
