@@ -21,7 +21,7 @@ contract ABADao {
         return abaTokenContract;
     }
     
-    function getBasketBallLeagueContractAddress() public view returns(address) {
+    function getBasketBallLeagueStorageContractAddress() public view returns(address) {
         return basketballLeagueStorageContract;
     }
     
