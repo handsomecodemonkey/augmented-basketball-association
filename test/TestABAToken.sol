@@ -6,10 +6,19 @@ import "../contracts/ABAToken.sol";
 
 contract TestABAToken {
 
+ 	uint256 private constant totalSupply = 100;
+ 	ABAToken private abaToken;
+
+ 	function beforeEach() public {
+    	abaToken = new ABAToken();
+  	}
+
+  	function testTotalSupply() public {
+		Assert.equal(abaToken.totalSupply(), totalSupply, "Total supply should be 100");
+	}
+
 	function testInitialBalance() public {
-		ABAToken abaToken = new ABAToken();
-	    uint256 expected = 100;
-	    Assert.equal(abaToken.balanceOf(address(this)), expected, "Creator should have 100 ABA Tokens initially");
+	    Assert.equal(abaToken.balanceOf(address(this)), totalSupply, "Creator should have 100 ABA Tokens initially");
 	}
 
 }
