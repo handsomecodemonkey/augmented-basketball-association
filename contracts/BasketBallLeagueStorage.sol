@@ -41,11 +41,11 @@ contract BasketballLeagueStorage {
     
     //functions
     
-    function setNewLeagueOrganizationAddress(address _newLeagueOrganizationAddress) public onlyLeagueOrganization {
+    function setNewLeagueOrganizationAddress(address _newLeagueOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) {
         leagueOrganizationAddress = _newLeagueOrganizationAddress;
     }
     
-    function createNewTeam(string _metaDataLink, address _teamOrganizationAddress) public onlyLeagueOrganization {
+    function createNewTeam(string _metaDataLink, address _teamOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) {
         teamCount++;
         Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress);
         teams[teamCount] = newTeam;
@@ -56,7 +56,7 @@ contract BasketballLeagueStorage {
         return teams[_teamId].metaDataLink;
     }
     
-    function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyCommisioner {
+    function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyThisAddress(commisioner) {
         assetCount++;
         Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
         assets[assetCount] = newAsset;
@@ -67,7 +67,7 @@ contract BasketballLeagueStorage {
         return assets[_assetId].metaDataLink;
     }
     
-    function changeCommisioner(address _newCommisioner) public onlyLeagueOrganization {
+    function changeCommisioner(address _newCommisioner) public onlyThisAddress(leagueOrganizationAddress) {
         commisioner = _newCommisioner;
         //TODO: Emit Event
     }
@@ -78,13 +78,9 @@ contract BasketballLeagueStorage {
     
     //function modifiers
     
-    modifier onlyCommisioner() {
-        require(msg.sender == commisioner);
+    modifier onlyThisAddress(address _address) {
+        require(msg.sender == _address);
         _;
     }
-    
-    modifier onlyLeagueOrganization() {
-        require(msg.sender == leagueOrganizationAddress);
-        _;
-    }
+
 }
