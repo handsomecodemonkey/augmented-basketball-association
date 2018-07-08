@@ -1,22 +1,26 @@
 pragma solidity ^0.4.24;
 
 import "./ABAToken.sol";
-import "./BasketballLeagueStorage.sol";
+import "./BasketBallLeagueStorage.sol";
 
 contract ABADao {
     
     ABAToken private abaTokenContract;
-    BasketballLeagueStorage private basketballLeagueStorageContract;
+    BasketBallLeagueStorage private basketballLeagueStorageContract;
     
     constructor(address _tokenContractAddress) public {
         abaTokenContract = ABAToken(_tokenContractAddress); //Connect the token contract
-        basketballLeagueStorageContract = new BasketballLeagueStorage(); //Create the league storage/state
+        basketballLeagueStorageContract = new BasketBallLeagueStorage(); //Create the league storage/state
     }
     
     //variables
     
     //functions
     
+    function changeABACommisioner(address _newCommisioner) public requirePercentageShare(51) {
+        basketballLeagueStorageContract.changeCommisioner(_newCommisioner);
+    }
+
     function getABATokenContractAddress() public view returns(address) {
         return abaTokenContract;
     }

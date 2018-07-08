@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 
-contract BasketballLeagueStorage {
+contract BasketBallLeagueStorage {
     enum AssetType { Player, Augmentation, DraftPick, Coach }
      
     struct Team {
