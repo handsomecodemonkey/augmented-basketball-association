@@ -5,7 +5,7 @@ contract('ABAToken JS Test', async(accounts) => {
 	let abaToken;
 
 	beforeEach(async() => {
-		abaToken = await ABAToken.new();
+		abaToken = await ABAToken.new({from:accounts[0]});
 	});
 
 	it("should have total supply of 100", async() => {
