@@ -19,4 +19,14 @@ contract('BasketBallLeagueStorage JS Test', async(accounts) => {
 		assert.equal(accounts[0], leagueOrgAddress);
 	});
 
+	it("should return empty string for non existant asset meta data", async() => {
+		let assetURL = await leagueStorage.assetMetadata(100);
+		assert.equal("", assetURL);
+	});
+
+	it("should return empty string for non existant team meta data", async() => {
+		let teamURL = await leagueStorage.teamMetadata(100);
+		assert.equal("", teamURL);
+	});
+
 });
