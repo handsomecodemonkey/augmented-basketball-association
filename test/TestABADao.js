@@ -36,4 +36,19 @@ contract('ABADao JS Test', async(accounts) => {
 		assert.equal(accounts[1], newCommisionerAddress);
 	});
 
+	it("should not allow just anyone to add a new team", async() => {
+		try{
+			await abaDao.addABATeam("", accounts[1],{from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should allow 20% shareholder to add a new team", async() => {
+		await abaDao.addABATeam("TEST", accounts[1],{from:accounts[0]});
+		let metaData = await leagueStorage.teamMetadata(1);
+		assert.equal("TEST", metaData);
+	});
+
 });
