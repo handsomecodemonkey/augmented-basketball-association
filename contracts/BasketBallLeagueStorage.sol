@@ -28,12 +28,14 @@ contract BasketBallLeagueStorage {
     bool public emergencyStop;
     
     //events
-    //team added
-    //draft pick created
+    event TeamAdded(uint256 teamId);
+
     //player added
     //player traded
-    //emergency stop turned on
-    //emergency stop turned off
+
+    event NewAssetCreated(AssetType assetType, uint256 assetId);
+    event EmergencyStopOn();
+    event EmergencyStopOff();
     
     constructor() public{
         //Set contract creator as original commisioner and leagueOrganizationAddress (they can update this later)
@@ -50,7 +52,7 @@ contract BasketBallLeagueStorage {
         teamCount++;
         Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress);
         teams[teamCount] = newTeam;
-        //TODO: Emit Event
+        emit TeamAdded(teamCount);
     }
     
     function teamMetadata(uint256 _teamId) public view returns (string infoUrl) {
@@ -61,7 +63,7 @@ contract BasketBallLeagueStorage {
         assetCount++;
         Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
         assets[assetCount] = newAsset;
-        //TODO: Emit Event
+        emit NewAssetCreated(_assetType, assetCount);
     }
     
     function assetMetadata(uint256 _assetId) public view returns (string infoUrl) {
@@ -76,9 +78,9 @@ contract BasketBallLeagueStorage {
     function setEmergencyStop(bool _emergency) public onlyThisAddress(leagueOrganizationAddress) {
         emergencyStop = _emergency;
         if(emergencyStop) {
-            //emit event
+            emit EmergencyStopOn();
         } else {
-            //emit event
+            emit EmergencyStopOff();
         }
     }
 
