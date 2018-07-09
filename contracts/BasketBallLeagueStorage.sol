@@ -12,7 +12,6 @@ contract BasketBallLeagueStorage {
         AssetType assetType;
         uint256 owningTeam;
         string metaDataLink;
-        //TODO address agent;
     }
     
     //variable declarations
@@ -33,6 +32,7 @@ contract BasketBallLeagueStorage {
     //player added
     //player traded
 
+    event CommisionerChanged(address oldCommisioner, address newCommisioner);
     event NewAssetCreated(AssetType assetType, uint256 assetId);
     event EmergencyStopOn();
     event EmergencyStopOff();
@@ -71,8 +71,8 @@ contract BasketBallLeagueStorage {
     }
     
     function changeCommisioner(address _newCommisioner) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
+        emit CommisionerChanged(commisioner, _newCommisioner);
         commisioner = _newCommisioner;
-        //TODO: Emit Event
     }
     
     function setEmergencyStop(bool _emergency) public onlyThisAddress(leagueOrganizationAddress) {
