@@ -29,6 +29,7 @@ contract BasketBallLeagueStorage {
     /** Events */
     event TeamAdded(uint256 teamId);
     event PlayerDrafted(uint256 assetId, uint256 teamId);
+    event PlayerRenounced(uint256 assetId, uint256 teamId);
     event CommisionerChanged(address oldCommisioner, address newCommisioner);
     event NewAssetCreated(AssetType assetType, uint256 assetId);
     event EmergencyStopOn();
@@ -194,6 +195,15 @@ contract BasketBallLeagueStorage {
         asset.owningTeam = _teamId;
         team.rosterCount++;
         emit PlayerDrafted(_assetId, _teamId);
+    }
+
+    function renounceAsset(uint256 _assetId, uint256 _teamId) public assetMustExist(_assetId) teamMustExistAndOnlyTeamOrg(_teamId) notOnEmergencyStop {
+        Asset storage asset = assets[_assetId];
+        Team storage team = teams[_teamId];
+        require(asset.owningTeam == _teamId);
+        asset.owningTeam = 0;
+        team.rosterCount--;
+        emit PlayerRenounced(_assetId, _teamId);
     }
 
 }
