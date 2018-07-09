@@ -62,6 +62,12 @@ contract('BasketBallLeagueStorage JS Test', async(accounts) => {
 		}
 	});
 
+	it("should allow league organization to turn on emergency stop", async() => {
+		await leagueStorage.setEmergencyStop(true,{from:accounts[0]});
+		let emergencyStop = await leagueStorage.emergencyStop();
+		assert.equal(true, emergencyStop);
+	});
+
 	it("should return empty string for non existant asset meta data", async() => {
 		let assetURL = await leagueStorage.assetMetadata(100);
 		assert.equal("", assetURL);
@@ -71,5 +77,7 @@ contract('BasketBallLeagueStorage JS Test', async(accounts) => {
 		let teamURL = await leagueStorage.teamMetadata(100);
 		assert.equal("", teamURL);
 	});
+
+	//tODO test functions should not allow functions when emergency stop is on
 
 });

@@ -25,6 +25,14 @@ contract ABADao {
         basketballLeagueStorageContract.createNewTeam(_metaDataLink, _teamOrganizationAddress);
     }
 
+    function turnOnEmergencyStop() public requirePercentageShare(51) {
+        basketballLeagueStorageContract.setEmergencyStop(true);
+    }
+
+    function turnOffEmergencyStop() public requirePercentageShare(51) {
+        basketballLeagueStorageContract.setEmergencyStop(false);
+    }
+
     function getABATokenContractAddress() public view returns(address) {
         return abaTokenContract;
     }
@@ -32,9 +40,6 @@ contract ABADao {
     function getBasketBallLeagueStorageContractAddress() public view returns(address) {
         return basketballLeagueStorageContract;
     }
-    
-
-    
     
     //events
     

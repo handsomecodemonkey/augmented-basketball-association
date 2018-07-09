@@ -51,4 +51,36 @@ contract('ABADao JS Test', async(accounts) => {
 		assert.equal("TEST", metaData);
 	});
 
+	it("should not allow just anyone to turn on emergency stop", async() => {
+		try{
+			await abaDao.turnOnEmergencyStop({from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should allow 51% share holder to turn on emergency stop", async() => { 
+		await abaDao.turnOnEmergencyStop({from:accounts[0]});
+		let emergencyStop = await leagueStorage.emergencyStop();
+		assert.equal(true, emergencyStop);
+	});
+
+	it("should not allow just anyone to turn off emergency stop", async() => {
+		await abaDao.turnOnEmergencyStop({from:accounts[0]});
+		try{
+			await abaDao.turnOffEmergencyStop({from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should allow 51% shareholder to turn on emergency stop", async() => {
+		await abaDao.turnOnEmergencyStop({from:accounts[0]});
+		await abaDao.turnOffEmergencyStop({from:accounts[0]});
+		let emergencyStop = await leagueStorage.emergencyStop();
+		assert.equal(false, emergencyStop);
+	});
+
 });
