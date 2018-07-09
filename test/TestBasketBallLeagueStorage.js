@@ -95,8 +95,6 @@ contract('BasketBallLeagueStorage JS Test', async(accounts) => {
 		assert.equal("", teamURL);
 	});
 
-	//tODO test functions should not allow functions when emergency stop is on
-
 	it("should not let allow commisioner change on emergency stop", async() => {
 		await leagueStorage.setEmergencyStop(true, {from: accounts[0]});
 		try{
@@ -127,6 +125,85 @@ contract('BasketBallLeagueStorage JS Test', async(accounts) => {
 		}
 	});
 
+});
 
+contract('BasketBallLeagueStorage drafting tests', async(accounts) => {
+	
+	let leagueStorage;
+
+	beforeEach(async() => {
+		leagueStorage = await BasketballLeagueStorage.new({from: accounts[0]});
+
+		//Other Setup
+		for (var i = 0; i < 11; i++) { //Create New Assets
+			await leagueStorage.createNewAsset(1, 0, "TEST Asset " + i, {from:accounts[0]}); 
+		}
+
+		for (var i = 0; i < 4; i++) { //Create Teams
+			await leagueStorage.createNewTeam("", accounts[i + 1], {from:accounts[0]}); 
+		}
+	});
+
+	it("should not allow draft when roster is full", async() => {
+
+		for(var i = 0; i < 10; i++) {
+			await leagueStorage.draftAsset(i + 1, 1, {from:accounts[1]});
+		}
+
+		try{
+			await leagueStorage.draftAsset(11, 1, {from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+		
+	});
+
+	it("should not allow draft when asset is already owned by another team", async() => {
+		await leagueStorage.draftAsset(1, 1, {from:accounts[1]});
+		try{
+			await leagueStorage.draftAsset(1, 2, {from:accounts[2]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should not allow draft on emergencyStop", async() => {
+		await leagueStorage.setEmergencyStop(true, {from: accounts[0]});
+		try{
+			await leagueStorage.draftAsset(1, 1, {from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should not allow just anyone to draft to a team", async() => {
+		try{
+			await leagueStorage.draftAsset(1, 1, {from:accounts[5]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should not allow asset draft of non existant asset", async() => {
+		try{
+			await leagueStorage.draftAsset(100, 1, {from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should not allow asset draft of non existant team", async() => {
+		try{
+			await leagueStorage.draftAsset(1, 10, {from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
 
 });
