@@ -1,11 +1,22 @@
+/**
+* Storage Contract that saves the state of the basketball league.
+* Delegates permissions to team organization addresses and league organization address.
+*
+* @file BasketBallLeagueStorage.sol
+* @author Erick Kusnadi
+*/
+
 pragma solidity ^0.4.24;
 
+/** @title BasketBallLeagueStorage. */
 contract BasketBallLeagueStorage {
+
+    /** Enums + Structs */
     enum AssetType { Player, Augmentation, DraftPick, Coach }
      
     struct Team {
         string metaDataLink;
-        address teamOrganizationAddress; //Will be the address of the DAO or individual owner
+        address teamOrganizationAddress; //Will be the address of a team DAO or can be an individual owner
         uint256 rosterCount;
     }
     
@@ -15,7 +26,7 @@ contract BasketBallLeagueStorage {
         string metaDataLink;
     }
 
-    //events
+    /** Events */
     event TeamAdded(uint256 teamId);
     event PlayerDrafted(uint256 assetId, uint256 teamId);
     event CommisionerChanged(address oldCommisioner, address newCommisioner);
@@ -23,89 +34,20 @@ contract BasketBallLeagueStorage {
     event EmergencyStopOn();
     event EmergencyStopOff();
     
-    //variable declarations
-    address public commisioner;
-    address public leagueOrganizationAddress;
-    
+    /** Variables */
+    address public commisioner; //Commisioner's job is to make new assets (players, coaches, etc.)
+    address public leagueOrganizationAddress; //Will be the address of the league DAO or can be an individual owner
+
     uint256 private assetCount;
     mapping(uint256 => Asset) private assets;
-
-    uint256 private constant rosterLimit = 10;
     
     uint256 private teamCount;
     mapping(uint256 => Team) private teams;
 
     bool public emergencyStop;
+    uint256 private constant rosterLimit = 10;
     
-    constructor() public{
-        //Set contract creator as original commisioner and leagueOrganizationAddress (they can update this later)
-        commisioner = msg.sender;
-        leagueOrganizationAddress = msg.sender;
-        assetCount = 0; //Start at 0 so ids will start counting from 1
-        teamCount = 0;
-        emergencyStop = false;
-    }
-    
-    //functions
-    
-    function createNewTeam(string _metaDataLink, address _teamOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
-        teamCount++;
-        Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress, 0);
-        teams[teamCount] = newTeam;
-        emit TeamAdded(teamCount);
-    }
-    
-    function teamMetadata(uint256 _teamId) public view returns (string infoUrl) {
-        return teams[_teamId].metaDataLink;
-    }
-    
-    function ownerOfAsset(uint256 _assetId) public view assetMustExist(_assetId) returns (uint256 teamId) {
-        Asset memory asset = assets[_assetId];
-        return asset.owningTeam;
-    }
-
-    //When owningTeam is 0 that means it is undrafted and can be picked up by any team
-    function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyThisAddress(commisioner) notOnEmergencyStop {
-        assetCount++;
-        Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
-        assets[assetCount] = newAsset;
-        emit NewAssetCreated(_assetType, assetCount);
-    }
-    
-    function assetMetadata(uint256 _assetId) public view returns (string infoUrl) {
-        return assets[_assetId].metaDataLink;
-    }
-    
-    function changeCommisioner(address _newCommisioner) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
-        emit CommisionerChanged(commisioner, _newCommisioner);
-        commisioner = _newCommisioner;
-    }
-    
-    function setEmergencyStop(bool _emergency) public onlyThisAddress(leagueOrganizationAddress) {
-        emergencyStop = _emergency;
-        if(emergencyStop) {
-            emit EmergencyStopOn();
-        } else {
-            emit EmergencyStopOff();
-        }
-    }
-
-
-    //drafting and trading
-    function draftAsset(uint256 _assetId, uint256 _teamId) public assetMustExist(_assetId) teamMustExistAndOnlyTeamOrg(_teamId) notOnEmergencyStop {
-        //asset id must exist
-        //teamId must exist
-        //address must be equal to team org's address
-        //asset must be team 0
-        Asset storage asset = assets[_assetId];
-        Team storage team = teams[_teamId];
-        require(asset.owningTeam == 0 && team.rosterCount < rosterLimit);
-        asset.owningTeam = _teamId;
-        team.rosterCount++;
-        emit PlayerDrafted(_assetId, _teamId);
-    }
-
-    //function modifiers
+    /** Function Modifiers */
     modifier assetMustExist(uint256 _assetId) {
         require(_assetId > 0 && _assetId < (assetCount + 1));
         _;
@@ -126,6 +68,132 @@ contract BasketBallLeagueStorage {
     modifier notOnEmergencyStop() {
         require(!emergencyStop);
         _;
+    }
+
+    /** Functions */
+
+    /**
+    * @dev  Constructor sets contract creator as the original commisioner and leagueOrganizationAddress
+    *       Supposed to be called from the ABADao contract, but can be deployed by an individual
+    *
+    */
+    constructor() public{
+        
+        commisioner = msg.sender;
+        leagueOrganizationAddress = msg.sender;
+        assetCount = 0; //Start at 0 so ids will start counting from 1
+        teamCount = 0;
+        emergencyStop = false;
+    }
+    
+    /**
+    * @dev  Function that creates a new team in the league
+    *       Can only be done by the leagueOrganization
+    *
+    * @param _metaDataLink The URL Link to the team's metadata
+    * @param _teamOrganizationAddress The address of the team's owner can be an individual or a DAO
+    *
+    */
+    function createNewTeam(string _metaDataLink, address _teamOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
+        teamCount++;
+        Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress, 0);
+        teams[teamCount] = newTeam;
+        emit TeamAdded(teamCount);
+    }
+    
+    /**
+    * @dev  Retrieves a team's metadata URL Link 
+    *
+    * @param _teamId The Id of the team
+    *
+    * @return infoUrl metadata url string of the team. Blank if team does not exist.
+    */
+    function teamMetadata(uint256 _teamId) public view returns (string infoUrl) {
+        return teams[_teamId].metaDataLink;
+    }
+    
+    /**
+    * @dev  Retrieves the owner of an asset.
+    *
+    * @param _assetId The Id of the asset
+    *
+    * @return teamId Id of the team that owns the asset. 0 means it is not owned by anyone.
+    */
+    function ownerOfAsset(uint256 _assetId) public view assetMustExist(_assetId) returns (uint256 teamId) {
+        Asset memory asset = assets[_assetId];
+        return asset.owningTeam;
+    }
+
+    /**
+    * @dev  Creates a new asset in the basketball league
+    *       Only the commisioner has permission to do so.
+    *
+    * @param _assetType The type of the newly created asset.
+    * @param _owningTeam The team that will own the new asset. 0 means it will be initially unowned and a team can draft it.
+    * @param _metaDataLink The metadata URL link of the asset.
+    */
+    function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyThisAddress(commisioner) notOnEmergencyStop {
+        assetCount++;
+        Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
+        assets[assetCount] = newAsset;
+        emit NewAssetCreated(_assetType, assetCount);
+    }
+    
+    /**
+    * @dev  Retrieves an asset's metadata URL Link 
+    *
+    * @param _assetId The Id of the asset
+    *
+    * @return infoUrl metadata url string of the asset. Blank if asset does not exist.
+    */
+    function assetMetadata(uint256 _assetId) public view returns (string infoUrl) {
+        return assets[_assetId].metaDataLink;
+    }
+    
+    /**
+    * @dev  Changes the commisioner of the league.
+    *       Can only be done by the league's organization dao or owner of the league.
+    *
+    * @param _newCommisioner An address of the new commisioner
+    *
+    */
+    function changeCommisioner(address _newCommisioner) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
+        emit CommisionerChanged(commisioner, _newCommisioner);
+        commisioner = _newCommisioner;
+    }
+    
+    /**
+    * @dev  Change the Emergency Stop state.
+    *       Can only be done by the league's organization.
+    *       State changing functions are disallowed when emergency stop is on.
+    *
+    * @param _emergency boolean value of whether or not the emergency stop should be on.
+    *
+    */
+    function setEmergencyStop(bool _emergency) public onlyThisAddress(leagueOrganizationAddress) {
+        emergencyStop = _emergency;
+        if(emergencyStop) {
+            emit EmergencyStopOn();
+        } else {
+            emit EmergencyStopOff();
+        }
+    }
+
+    /**
+    * @dev  Function for a team to draft a player to their organziation.
+    *       Cannot go past the roster limit, and asset must be unowned.
+    *
+    * @param _assetId Id of the asset a team would like to draft. Asset must exist.
+    * @param _teamId Id of the team that is drafting the asset. Team must exist.
+    *
+    */
+    function draftAsset(uint256 _assetId, uint256 _teamId) public assetMustExist(_assetId) teamMustExistAndOnlyTeamOrg(_teamId) notOnEmergencyStop {
+        Asset storage asset = assets[_assetId];
+        Team storage team = teams[_teamId];
+        require(asset.owningTeam == 0 && team.rosterCount < rosterLimit);
+        asset.owningTeam = _teamId;
+        team.rosterCount++;
+        emit PlayerDrafted(_assetId, _teamId);
     }
 
 }
