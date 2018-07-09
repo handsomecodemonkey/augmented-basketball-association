@@ -5,7 +5,7 @@ contract BasketBallLeagueStorage {
      
     struct Team {
         string metaDataLink;
-        address teamOrganizationAddress; //Will be the address of the DAO
+        address teamOrganizationAddress; //Will be the address of the DAO or individual owner
     }
     
     struct Asset {
@@ -13,6 +13,14 @@ contract BasketBallLeagueStorage {
         uint256 owningTeam;
         string metaDataLink;
     }
+
+    //events
+    event TeamAdded(uint256 teamId);
+    event PlayerDrafted(uint256 assetId, uint256 teamId);
+    event CommisionerChanged(address oldCommisioner, address newCommisioner);
+    event NewAssetCreated(AssetType assetType, uint256 assetId);
+    event EmergencyStopOn();
+    event EmergencyStopOff();
     
     //variable declarations
     address public commisioner;
@@ -20,22 +28,13 @@ contract BasketBallLeagueStorage {
     
     uint256 private assetCount;
     mapping(uint256 => Asset) private assets;
+
+    uint256 private constant rosterLimit = 10;
     
     uint256 private teamCount;
     mapping(uint256 => Team) private teams;
 
     bool public emergencyStop;
-    
-    //events
-    event TeamAdded(uint256 teamId);
-
-    //player added
-    //player traded
-
-    event CommisionerChanged(address oldCommisioner, address newCommisioner);
-    event NewAssetCreated(AssetType assetType, uint256 assetId);
-    event EmergencyStopOn();
-    event EmergencyStopOff();
     
     constructor() public{
         //Set contract creator as original commisioner and leagueOrganizationAddress (they can update this later)
@@ -59,6 +58,13 @@ contract BasketBallLeagueStorage {
         return teams[_teamId].metaDataLink;
     }
     
+    //TODO function owner of asset
+    function ownerOfAsset(uint256 _assetId) public view assetMustExist(_assetId) returns (uint256 teamId) {
+        Asset memory asset = assets[_assetId];
+        return asset.owningTeam;
+    }
+
+    //When owningTeam is 0 that means it is undrafted and can be picked up by any team
     function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyThisAddress(commisioner) notOnEmergencyStop {
         assetCount++;
         Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
@@ -84,8 +90,32 @@ contract BasketBallLeagueStorage {
         }
     }
 
+
+    //drafting and trading
+    function draftAsset(uint256 _assetId, uint256 _teamId) public assetMustExist(_assetId) teamMustExistAndOnlyTeamOrg(_teamId) notOnEmergencyStop {
+        //asset id must exist
+        //teamId must exist
+        //address must be equal to team org's address
+        //asset must be team 0
+        Asset storage asset = assets[_assetId];
+        require(asset.owningTeam == 0);
+        asset.owningTeam = _teamId;
+        emit PlayerDrafted(_assetId, _teamId);
+    }
+
     //function modifiers
-    
+    modifier assetMustExist(uint256 _assetId) {
+        require(_assetId > 0 && _assetId < (assetCount + 1));
+        _;
+    }
+
+    modifier teamMustExistAndOnlyTeamOrg(uint256 _teamId) {
+        require(_teamId > 0 && _teamId < (teamCount + 1));
+        Team memory team = teams[_teamId];
+        require(msg.sender == team.teamOrganizationAddress);
+        _;
+    }
+
     modifier onlyThisAddress(address _address) {
         require(msg.sender == _address);
         _;
