@@ -21,6 +21,10 @@ contract ABADao {
         basketballLeagueStorageContract.changeCommisioner(_newCommisioner);
     }
 
+    function addABATeam(string _metaDataLink, address _teamOrganizationAddress) public requirePercentageShare(20) {
+        basketballLeagueStorageContract.createNewTeam(_metaDataLink, _teamOrganizationAddress);
+    }
+
     function getABATokenContractAddress() public view returns(address) {
         return abaTokenContract;
     }
@@ -29,7 +33,7 @@ contract ABADao {
         return basketballLeagueStorageContract;
     }
     
-        //internal function call
+
     
     
     //events
