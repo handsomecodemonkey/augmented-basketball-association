@@ -24,12 +24,16 @@ contract BasketBallLeagueStorage {
     
     uint256 private teamCount;
     mapping(uint256 => Team) private teams;
+
+    bool public emergencyStop;
     
     //events
     //team added
     //draft pick created
     //player added
     //player traded
+    //emergency stop turned on
+    //emergency stop turned off
     
     constructor() public{
         //Set contract creator as original commisioner and leagueOrganizationAddress (they can update this later)
@@ -37,15 +41,12 @@ contract BasketBallLeagueStorage {
         leagueOrganizationAddress = msg.sender;
         assetCount = 0; //Start at 0 so ids will start counting from 1
         teamCount = 0;
+        emergencyStop = false;
     }
     
     //functions
     
-    function setNewLeagueOrganizationAddress(address _newLeagueOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) {
-        leagueOrganizationAddress = _newLeagueOrganizationAddress;
-    }
-    
-    function createNewTeam(string _metaDataLink, address _teamOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) {
+    function createNewTeam(string _metaDataLink, address _teamOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
         teamCount++;
         Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress);
         teams[teamCount] = newTeam;
@@ -56,7 +57,7 @@ contract BasketBallLeagueStorage {
         return teams[_teamId].metaDataLink;
     }
     
-    function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyThisAddress(commisioner) {
+    function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyThisAddress(commisioner) notOnEmergencyStop {
         assetCount++;
         Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
         assets[assetCount] = newAsset;
@@ -67,19 +68,29 @@ contract BasketBallLeagueStorage {
         return assets[_assetId].metaDataLink;
     }
     
-    function changeCommisioner(address _newCommisioner) public onlyThisAddress(leagueOrganizationAddress) {
+    function changeCommisioner(address _newCommisioner) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
         commisioner = _newCommisioner;
         //TODO: Emit Event
     }
     
-    //TODO
-    //function removeAsset
-    //function removeTeam
-    
+    function setEmergencyStop(bool _emergency) public onlyThisAddress(leagueOrganizationAddress) {
+        emergencyStop = _emergency;
+        if(emergencyStop) {
+            //emit event
+        } else {
+            //emit event
+        }
+    }
+
     //function modifiers
     
     modifier onlyThisAddress(address _address) {
         require(msg.sender == _address);
+        _;
+    }
+
+    modifier notOnEmergencyStop() {
+        require(!emergencyStop);
         _;
     }
 
