@@ -18,6 +18,23 @@ contract('BasketBallLeagueStorage JS Test', async(accounts) => {
 		assert.equal(accounts[0], leagueOrgAddress);
 	});
 
+	it("should not allow just anyone to create a new asset", async() => {
+		try{
+			await leagueStorage.createNewAsset(1, 0, "TEST", {from:accounts[1]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should allow commisioner to create a new asset", async() => {
+		await leagueStorage.createNewAsset(1, 0, "TEST", {from:accounts[0]});
+		let test = await leagueStorage.assetMetadata(1);
+		let owner = await leagueStorage.ownerOfAsset(1);
+		assert.equal(0,owner);
+		assert.equal("TEST", test);
+	});
+
 	it("should not allow just anyone to change commisioner", async() => {
 		try{
 			await leagueStorage.changeCommisioner(accounts[1],{from:accounts[1]});
@@ -79,5 +96,37 @@ contract('BasketBallLeagueStorage JS Test', async(accounts) => {
 	});
 
 	//tODO test functions should not allow functions when emergency stop is on
+
+	it("should not let allow commisioner change on emergency stop", async() => {
+		await leagueStorage.setEmergencyStop(true, {from: accounts[0]});
+		try{
+			await leagueStorage.changeCommisioner(accounts[1],{from:accounts[0]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should not allow asset creation on emergency stop", async() => {
+		await leagueStorage.setEmergencyStop(true, {from: accounts[0]});
+		try{
+			await leagueStorage.createNewAsset(1, 0, "TEST", {from:accounts[0]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+	it("should not allow team creation on emergency stop", async() => {
+		await leagueStorage.setEmergencyStop(true, {from: accounts[0]});
+		try{
+			await leagueStorage.createNewTeam("TEST", accounts[1],{from:accounts[0]});
+			assert.fail(); //Should throw exception
+		} catch(error) {
+			assert.isTrue(error.message.includes("revert"));
+		}
+	});
+
+
 
 });

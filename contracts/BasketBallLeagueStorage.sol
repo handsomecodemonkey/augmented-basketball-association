@@ -6,6 +6,7 @@ contract BasketBallLeagueStorage {
     struct Team {
         string metaDataLink;
         address teamOrganizationAddress; //Will be the address of the DAO or individual owner
+        uint256 rosterCount;
     }
     
     struct Asset {
@@ -49,7 +50,7 @@ contract BasketBallLeagueStorage {
     
     function createNewTeam(string _metaDataLink, address _teamOrganizationAddress) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
         teamCount++;
-        Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress);
+        Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress, 0);
         teams[teamCount] = newTeam;
         emit TeamAdded(teamCount);
     }
@@ -58,7 +59,6 @@ contract BasketBallLeagueStorage {
         return teams[_teamId].metaDataLink;
     }
     
-    //TODO function owner of asset
     function ownerOfAsset(uint256 _assetId) public view assetMustExist(_assetId) returns (uint256 teamId) {
         Asset memory asset = assets[_assetId];
         return asset.owningTeam;
@@ -98,8 +98,10 @@ contract BasketBallLeagueStorage {
         //address must be equal to team org's address
         //asset must be team 0
         Asset storage asset = assets[_assetId];
-        require(asset.owningTeam == 0);
+        Team storage team = teams[_teamId];
+        require(asset.owningTeam == 0 && team.rosterCount < rosterLimit);
         asset.owningTeam = _teamId;
+        team.rosterCount++;
         emit PlayerDrafted(_assetId, _teamId);
     }
 
