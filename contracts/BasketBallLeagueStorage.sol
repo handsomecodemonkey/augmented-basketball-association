@@ -89,7 +89,8 @@ contract BasketBallLeagueStorage {
     
     /**
     * @dev  Function that creates a new team in the league
-    *       Can only be done by the leagueOrganization
+    *       Can only be done by the leagueOrganization from
+    *       someone with at least 20 tokens.
     *
     * @param _metaDataLink The URL Link to the team's metadata
     * @param _teamOrganizationAddress The address of the team's owner can be an individual or a DAO
@@ -103,7 +104,7 @@ contract BasketBallLeagueStorage {
     }
     
     /**
-    * @dev  Retrieves a team's metadata URL Link 
+    * @dev  Retrieves a team's metadata URL Link (could be json or an IPFS Hash)
     *
     * @param _teamId The Id of the team
     *
