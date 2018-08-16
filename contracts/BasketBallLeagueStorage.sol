@@ -154,6 +154,13 @@ contract BasketBallLeagueStorage {
     * @param _metaDataLink The metadata URL link of the asset.
     */
     function createNewAsset(AssetType _assetType, uint256 _owningTeam, string _metaDataLink) public onlyThisAddress(commisioner) notOnEmergencyStop {
+        require(_owningTeam >= 0 && _owningTeam < (teamCount + 1));
+
+        if(_owningTeam != 0) {
+            Team storage team = teams[_owningTeam];
+            team.rosterCount++;
+        }
+
         assetCount++;
         Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
         assets[assetCount] = newAsset;
