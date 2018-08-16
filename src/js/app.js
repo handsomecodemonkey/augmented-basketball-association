@@ -219,6 +219,10 @@ App = {
     $('#playerId').text("Player Id: " + App.currentPlayer.playerId);
     $('#playerOwner').text("Team: " + App.currentPlayer.team);
 
+    $('#shooting').text("Shooting: " + (Math.floor(Math.random() * 100) + 1));
+    $('#passing').text("Passing: " + (Math.floor(Math.random() * 100) + 1));
+    $('#rebounding').text("Rebounding: " + (Math.floor(Math.random() * 100) + 1));
+
     if(App.currentPlayer.teamId === 0) {
       $('#draftButton').removeAttr('disabled');
     } else {
@@ -237,8 +241,6 @@ App = {
 
     App.contracts.BasketBallLeagueStorage.at(App.leagueStorageAddress)
       .then(function(instance) {
-        console.log(App.currentPlayer.playerId);
-        console.log(selectedTeamId);
         return instance.draftAsset(App.currentPlayer.playerId, selectedTeamId, {from: web3.eth.accounts[0]});
       });
   },
