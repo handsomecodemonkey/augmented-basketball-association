@@ -132,6 +132,21 @@ App = {
         instance.turnOnEmergencyStop({from: web3.eth.accounts[0]});
       }
     });
+  },
+
+  changeCommisioner: function() {
+    let newAddress = $('#newCommisionerAddress').val();
+    
+    if(newAddress === "") {
+      alert("Please insert an address");
+      return;
+    }
+
+    App.contracts.ABADao.deployed()
+    .then(function(instance) {
+      instance.changeABACommisioner(newAddress, {from: web3.eth.accounts[0]});
+    });
+
   }
 };
 
@@ -140,5 +155,6 @@ $(function() {
     App.init();
     $('#addAsset').click(App.addAsset);
     $('#emergencyOnOff').click(App.emergencyToggle);
+    $('#changeCommisioner').click(App.changeCommisioner);
   });
 });

@@ -66,8 +66,17 @@
       <div class="row invisible section-margin" id="abaDaoOnlySection">
           <div class="col-xs-12 col-sm-8 col-sm-push-2 border">
             <h2>ABA Token Holder Only Section</h2>
-            <p><small>Balance: <span id="abaTokenBalance">N/A</span></small></p>
-            <p><button type="button" id="emergencyOnOff" class="btn btn-danger">Emergency On/Off</button></p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><p><small>Balance: <span id="abaTokenBalance">N/A</span></small></p></li>
+                <li class="list-group-item">
+                    <p><button type="button" id="emergencyOnOff" class="btn btn-danger">Emergency On/Off</button></p>
+                </li>
+                <li class="list-group-item">
+                  <label for="newCommisionerAddress">New Commisioner Address</label>
+                  <input type="text" id="newCommisionerAddress" placeholder="Address" />
+                  <button type="button" id="changeCommisioner" class="btn btn-primary">Change Commisioner</button>
+                </li>
+            </ul>
           </div>
       </div>
 
@@ -93,6 +102,10 @@
       </div>
     
     <style>
+      .invisible {
+        display: none !important;
+      }
+      
       .border {
         border: solid 1px black;
       }
