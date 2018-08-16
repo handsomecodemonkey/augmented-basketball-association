@@ -54,6 +54,12 @@ App = {
         }).then(function(commisionerAddress) {
           $('#commisionerAddress').text(commisionerAddress);
           App.commisionerAddress = commisionerAddress;
+
+          if(commisionerAddress === web3.eth.accounts[0]){
+            $('#greeting').text("Welcome back commisioner!");
+            $('#commisioner-only-section').removeClass('invisible');
+          }
+
           return commisionerAddress;
         });
 

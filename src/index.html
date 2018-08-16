@@ -9,32 +9,40 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
   <body>
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <h1 class="text-center">Augmented Basketball</h1>
+          <h1 class="text-center">Augmented Basketball Association</h1>
           <hr/>
           <br/>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-xs-12">
-          <p class="text-center"><strong>ABADAO Address: </strong> <span id="abaDaoAddress">0x0000000000000000000000000000000000000000</span></p>
-          <p class="text-center"><strong>ABAToken Address: </strong> <span id="abaTokenAddress">0x0000000000000000000000000000000000000000</span></p>
-          <p class="text-center"><strong>Basketball League Address:</strong> <span id="leageStorageAddress">0x0000000000000000000000000000000000000000</span></p>
-          <p class="text-center"><strong>Commisioner Address:</strong> <span id="commisionerAddress">0x0000000000000000000000000000000000000000</span></p>
+        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+          <h2 id="greeting">Welcome!</h2>
         </div>
       </div>
+
+      <div class="row">
+        <div class="card col-xs-12 col-sm-8 col-sm-push-2">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item active">Contract information</li>
+              <li class="list-group-item"><strong>ABADAO Address: </strong> <span id="abaDaoAddress">0x0000000000000000000000000000000000000000</span></li>
+              <li class="list-group-item"><strong>ABAToken Address: </strong> <span id="abaTokenAddress">0x0000000000000000000000000000000000000000</span></li>
+              <li class="list-group-item"><strong>Basketball League Address:</strong> <span id="leageStorageAddress">0x0000000000000000000000000000000000000000</span></li>
+              <li class="list-group-item"><strong>Commisioner Address:</strong> <span id="commisionerAddress">0x0000000000000000000000000000000000000000</span></li>
+            </ul>
+          </div>
+      </div>
+
+      <div class="row invisible" id="commisioner-only-section">
+          <div class="col-xs-12 col-sm-8 col-sm-push-2">
+            <h3>Commisioner only section</h2>
+          </div>
+        </div>
 
     </div>
 
