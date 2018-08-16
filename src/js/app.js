@@ -3,6 +3,7 @@ App = {
   contracts: {},
   leagueStorageAddress: "",
   commisionerAddress: "",
+  emergencyStop: false,
 
   init: function() {
     return App.initWeb3();
@@ -82,6 +83,14 @@ App = {
       .then(function(instance){
         $('#abaTokenAddress').text(instance.address);
         return instance;
+      }).then(function(instance){
+        return instance.balanceOf(web3.eth.accounts[0]);
+      }).then(function(balance){
+        if(balance >=20) {
+          $('#abaDaoOnlySection').removeClass('invisible');
+          $('#abaTokenBalance').text(balance);
+        }
+        return;
       });
 
       return;
@@ -95,6 +104,7 @@ App = {
       return instance.emergencyStop();
     }).then(function(emergencyStopStatus) {
       $('#emergencyStopStatus').text(emergencyStopStatus);
+      App.emergencyStop = emergencyStopStatus;
       return;
     });
 
@@ -110,6 +120,18 @@ App = {
     .then(function(instance) {
       instance.createNewAsset(assetType, owningTeam, assetNameOrHash, {from: web3.eth.accounts[0]});
     });
+  },
+
+  emergencyToggle: function() {
+
+    App.contracts.ABADao.deployed()
+    .then(function(instance) {
+      if(App.emergencyStop) {
+        instance.turnOffEmergencyStop({from: web3.eth.accounts[0]});
+      } else {
+        instance.turnOnEmergencyStop({from: web3.eth.accounts[0]});
+      }
+    });
   }
 };
 
@@ -117,6 +139,6 @@ $(function() {
   $(window).load(function() {
     App.init();
     $('#addAsset').click(App.addAsset);
-
+    $('#emergencyOnOff').click(App.emergencyToggle);
   });
 });

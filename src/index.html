@@ -39,7 +39,7 @@
           </div>
       </div>
 
-      <div class="row invisible" id="commisioner-only-section">
+      <div class="row invisible section-margin" id="commisioner-only-section">
           <div class="col-xs-12 col-sm-8 col-sm-push-2 border">
             <h2>Commisioner only section</h2>
               <h3>Create a new league asset</h3>
@@ -61,7 +61,15 @@
                 </div>
                 <button id="addAsset" class="btn btn-primary">Submit</button>
           </div>
-        </div>
+      </div>
+
+      <div class="row invisible section-margin" id="abaDaoOnlySection">
+          <div class="col-xs-12 col-sm-8 col-sm-push-2 border">
+            <h2>ABA Token Holder Only Section</h2>
+            <p><small>Balance: <span id="abaTokenBalance">N/A</span></small></p>
+            <p><button type="button" id="emergencyOnOff" class="btn btn-danger">Emergency On/Off</button></p>
+          </div>
+      </div>
 
     </div>
 
@@ -87,6 +95,10 @@
     <style>
       .border {
         border: solid 1px black;
+      }
+
+      .section-margin {
+        margin: 20px 0;
       }
     </style>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
