@@ -113,6 +113,15 @@ contract BasketBallLeagueStorage {
     function teamMetadata(uint256 _teamId) public view returns (string infoUrl) {
         return teams[_teamId].metaDataLink;
     }
+
+    /**
+    * @dev Returns the number of current teams in the league
+    *
+    * @return uint256 teamCount
+    */
+    function numberOfTeams() public view returns (uint256) {
+        return teamCount;
+    }
     
     /**
     * @dev  Retrieves the owner of an asset.
@@ -124,6 +133,16 @@ contract BasketBallLeagueStorage {
     function ownerOfAsset(uint256 _assetId) public view assetMustExist(_assetId) returns (uint256 teamId) {
         Asset memory asset = assets[_assetId];
         return asset.owningTeam;
+    }
+
+    
+    /**
+    * @dev Returns the number of assets in the league
+    *
+    * @return uint256 assetId
+    */
+    function numberOfAssets() public view returns (uint256) {
+        return assetCount;
     }
 
     /**
