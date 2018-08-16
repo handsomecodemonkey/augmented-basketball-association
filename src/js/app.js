@@ -60,7 +60,7 @@ App = {
             $('#commisioner-only-section').removeClass('invisible');
           }
 
-          return commisionerAddress;
+          return App.initEmergencyStopStatus();
         });
 
         return;
@@ -87,11 +87,36 @@ App = {
       return;
     });
     return;
+  },
+
+  initEmergencyStopStatus: function() {
+    App.contracts.BasketBallLeagueStorage.at(App.leagueStorageAddress)
+    .then(function(instance) {
+      return instance.emergencyStop();
+    }).then(function(emergencyStopStatus) {
+      $('#emergencyStopStatus').text(emergencyStopStatus);
+      return;
+    });
+
+    return;
+  },
+
+  addAsset: function() {
+    var assetType = $('#assetType').val();
+    var owningTeam = $('#owningTeam').val();
+    var assetNameOrHash = $('#assetName').val();
+
+    App.contracts.BasketBallLeagueStorage.at(App.leagueStorageAddress)
+    .then(function(instance) {
+      instance.createNewAsset(assetType, owningTeam, assetNameOrHash, {from: web3.eth.accounts[0]});
+    });
   }
 };
 
 $(function() {
   $(window).load(function() {
     App.init();
+    $('#addAsset').click(App.addAsset);
+
   });
 });
