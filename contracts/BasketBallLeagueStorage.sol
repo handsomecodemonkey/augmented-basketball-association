@@ -219,8 +219,8 @@ contract BasketBallLeagueStorage {
         Asset storage asset = assets[_assetId];
         Team storage team = teams[_teamId];
         require(asset.owningTeam == 0 && team.rosterCount < rosterLimit);
-        asset.owningTeam = _teamId;
         team.rosterCount++;
+        asset.owningTeam = _teamId;
         emit LogPlayerDrafted(_assetId, _teamId);
     }
 
@@ -228,8 +228,8 @@ contract BasketBallLeagueStorage {
         Asset storage asset = assets[_assetId];
         Team storage team = teams[_teamId];
         require(asset.owningTeam == _teamId);
-        asset.owningTeam = 0;
         team.rosterCount--;
+        asset.owningTeam = 0;
         emit LogPlayerRenounced(_assetId, _teamId);
     }
 
