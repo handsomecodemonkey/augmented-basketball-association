@@ -24,6 +24,8 @@ Unimplemented features:
 - IPFS character creator (player stats are not saved in the blockchain, my idea would be to create the player and save their stats as json in IPFS and save the IPFS hash in the blockchain instead)
 - Complex player contracts
 
+Other information:
+- Uses SafeMath library and BasicToken (ERC20) contract templates from OpenZeppelin
 
 ## Prerequisites
 1) Ensure node/npm is installed (at least version 8 and above or the current LTS version)
