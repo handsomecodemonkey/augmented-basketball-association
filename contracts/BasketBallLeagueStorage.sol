@@ -221,6 +221,7 @@ contract BasketBallLeagueStorage {
         require(asset.owningTeam == 0 && team.rosterCount < rosterLimit);
         team.rosterCount++;
         asset.owningTeam = _teamId;
+        require(asset.owningTeam == _teamId); //Extra check for race conditions where two teams draft samer person at the same time
         emit LogPlayerDrafted(_assetId, _teamId);
     }
 
