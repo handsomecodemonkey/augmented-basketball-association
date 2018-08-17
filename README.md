@@ -8,7 +8,7 @@ It is called the Augmented Basketball Association or ABA because it is inspired 
 
 Players are fictional characters that basketball team owners can draft based on their stats. People playing would own a team and try to draft the best team; you can also have DAOs instead of individuals own/manage the team.
 
-This is basically a blockchain game similar to a basketball league simulator, but the players and their teams are on the blockchain. I plan on continuing this in the future and turning the players into NFTs (Non-Fungible tokens).
+This is basically a blockchain game similar to a basketball league simulator, but the players and their teams are on the blockchain. I plan on continuing this in the future and turning the players into NFTs (Non-Fungible tokens), as well as creating an off-chain simulation program that will pit the teams together. The results of those games will be logged onto the blockchain on a seperate oracle contract.
 
 Features:
 - A Commisioner who creates the players
