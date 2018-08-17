@@ -6,7 +6,7 @@
 * @author Erick Kusnadi
 */
 
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 /** @title BasketBallLeagueStorage. */
 contract BasketBallLeagueStorage {
