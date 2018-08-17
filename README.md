@@ -30,7 +30,7 @@ This is basically a blockchain game similar to a basketball league simulator, bu
 ### Setup/Video
 
 Please watch the following video to see setup and a demo of the project:
-https://youtu.be/wEKZfkXsdKs
+[https://youtu.be/wEKZfkXsdKs](https://youtu.be/wEKZfkXsdKs)
 
 ## Prerequisites
 1) Ensure node/npm is installed (at least version 8 and above or the current LTS version)
