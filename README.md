@@ -27,9 +27,9 @@ This is basically a blockchain game similar to a basketball league simulator, bu
 ### Other information:
 - Uses SafeMath library and BasicToken (ERC20) contract templates from OpenZeppelin
 
-### Setup/Video
+# PLEASE WATCH THIS VIDEO FOR SETUP / HOW TO USE THE DAPP
 
-Please watch the following video to see setup and a demo of the project:
+Please watch the following video to see setup and a demo of the project and some of its features:
 [https://youtu.be/wEKZfkXsdKs](https://youtu.be/wEKZfkXsdKs)
 
 ## Prerequisites
