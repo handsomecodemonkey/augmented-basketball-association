@@ -27,13 +27,13 @@ contract BasketBallLeagueStorage {
     }
 
     /** Events */
-    event TeamAdded(uint256 teamId);
-    event PlayerDrafted(uint256 assetId, uint256 teamId);
-    event PlayerRenounced(uint256 assetId, uint256 teamId);
-    event CommisionerChanged(address oldCommisioner, address newCommisioner);
-    event NewAssetCreated(AssetType assetType, uint256 assetId);
-    event EmergencyStopOn();
-    event EmergencyStopOff();
+    event LogTeamAdded(uint256 teamId);
+    event LogPlayerDrafted(uint256 assetId, uint256 teamId);
+    event LogPlayerRenounced(uint256 assetId, uint256 teamId);
+    event LogCommisionerChanged(address oldCommisioner, address newCommisioner);
+    event LogNewAssetCreated(AssetType assetType, uint256 assetId);
+    event LogEmergencyStopOn();
+    event LogEmergencyStopOff();
     
     /** Variables */
     address public commisioner; //Commisioner's job is to make new assets (players, coaches, etc.)
@@ -100,7 +100,7 @@ contract BasketBallLeagueStorage {
         teamCount++;
         Team memory newTeam = Team(_metaDataLink, _teamOrganizationAddress, 0);
         teams[teamCount] = newTeam;
-        emit TeamAdded(teamCount);
+        emit LogTeamAdded(teamCount);
     }
     
     /**
@@ -164,7 +164,7 @@ contract BasketBallLeagueStorage {
         assetCount++;
         Asset memory newAsset = Asset({assetType:_assetType, owningTeam:_owningTeam,metaDataLink:_metaDataLink});
         assets[assetCount] = newAsset;
-        emit NewAssetCreated(_assetType, assetCount);
+        emit LogNewAssetCreated(_assetType, assetCount);
     }
     
     /**
@@ -186,7 +186,7 @@ contract BasketBallLeagueStorage {
     *
     */
     function changeCommisioner(address _newCommisioner) public onlyThisAddress(leagueOrganizationAddress) notOnEmergencyStop {
-        emit CommisionerChanged(commisioner, _newCommisioner);
+        emit LogCommisionerChanged(commisioner, _newCommisioner);
         commisioner = _newCommisioner;
     }
     
@@ -201,9 +201,9 @@ contract BasketBallLeagueStorage {
     function setEmergencyStop(bool _emergency) public onlyThisAddress(leagueOrganizationAddress) {
         emergencyStop = _emergency;
         if(emergencyStop) {
-            emit EmergencyStopOn();
+            emit LogEmergencyStopOn();
         } else {
-            emit EmergencyStopOff();
+            emit LogEmergencyStopOff();
         }
     }
 
@@ -221,7 +221,7 @@ contract BasketBallLeagueStorage {
         require(asset.owningTeam == 0 && team.rosterCount < rosterLimit);
         asset.owningTeam = _teamId;
         team.rosterCount++;
-        emit PlayerDrafted(_assetId, _teamId);
+        emit LogPlayerDrafted(_assetId, _teamId);
     }
 
     function renounceAsset(uint256 _assetId, uint256 _teamId) public assetMustExist(_assetId) teamMustExistAndOnlyTeamOrg(_teamId) notOnEmergencyStop {
@@ -230,7 +230,7 @@ contract BasketBallLeagueStorage {
         require(asset.owningTeam == _teamId);
         asset.owningTeam = 0;
         team.rosterCount--;
-        emit PlayerRenounced(_assetId, _teamId);
+        emit LogPlayerRenounced(_assetId, _teamId);
     }
 
 }
