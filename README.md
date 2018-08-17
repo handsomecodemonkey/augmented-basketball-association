@@ -10,7 +10,7 @@ Players are fictional characters that basketball team owners can draft based on 
 
 This is basically a blockchain game similar to a basketball league simulator, but the players and their teams are on the blockchain. I plan on continuing this in the future and turning the players into NFTs (Non-Fungible tokens), as well as creating an off-chain simulation program that will pit the teams together. The results of those games will be logged onto the blockchain on a seperate oracle contract.
 
-Features:
+### Features:
 - A Commisioner who creates the players
 - An ABA Token that represents shares in the league and gives those with elevated privileges
     - Change the commisioner
@@ -18,14 +18,19 @@ Features:
     - Add a new team
 - Team owners can draft players they like and renounce those they don't
 
-Unimplemented features:
+### Unimplemented features:
 - Trading between teams
 - A more complex DAO to manage the league and teams.
 - IPFS character creator (player stats are not saved in the blockchain, my idea would be to create the player and save their stats as json in IPFS and save the IPFS hash in the blockchain instead)
 - Complex player contracts
 
-Other information:
+### Other information:
 - Uses SafeMath library and BasicToken (ERC20) contract templates from OpenZeppelin
+
+### Setup/Video
+
+Please watch the following video to see setup and a demo of the project:
+https://youtu.be/wEKZfkXsdKs
 
 ## Prerequisites
 1) Ensure node/npm is installed (at least version 8 and above or the current LTS version)
