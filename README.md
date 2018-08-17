@@ -6,8 +6,9 @@ It is a fantasy basketball league run by smart contracts.
 
 It is called the Augmented Basketball Association or ABA because it is inspired by the science fiction setting of the [Cellarius Universe](https://cellarius.network/) where basketball players have augmented themselves in order to improve their performance.
 
-Players are fictional characters that basketball team owners can draft based on their stats. People playing would own a team and try to draft the best team.
-The idea would be this is a game similar to a basketball league simulator where players have stats and the games are played/simulated.
+Players are fictional characters that basketball team owners can draft based on their stats. People playing would own a team and try to draft the best team; you can also have DAOs instead of individuals own/manage the team.
+
+This is basically a blockchain game similar to a basketball league simulator, but the players and their teams are on the blockchain. I plan on continuing this in the future and turning the players into NFTs (Non-Fungible tokens).
 
 Features:
 - A Commisioner who creates the players
@@ -15,12 +16,13 @@ Features:
     - Change the commisioner
     - Turn on/off the emergency shutdown 
     - Add a new team
-- Team owners can draft players the like and renounce those they don't
+- Team owners can draft players they like and renounce those they don't
 
 Unimplemented features:
 - Trading between teams
-- A more complex DAO to manage leagues and teams.
+- A more complex DAO to manage the league and teams.
 - IPFS character creator (player stats are not saved in the blockchain, my idea would be to create the player and save their stats as json in IPFS and save the IPFS hash in the blockchain instead)
+- Complex player contracts
 
 
 ## Prerequisites
